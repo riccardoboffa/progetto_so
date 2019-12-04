@@ -1,0 +1,78 @@
+__STRUTTURA PROGETTO__
+# - header.h
+# - function.c
+# - main.c
+
+
+
+# - matrice in memoria condivisa
+
+# - ogni cella ha un semaforo (1 set con tutti i semafori all'interno)
+
+# - struttura della cella {
+	char value;	//valore da stampare
+	int sem_num;	//numero del semaforo corrispondente nel set di semafori
+	int flag; 	//1 se c'è la bandierina, 0 altrimenti
+	int score;	//punteggio della bandierina
+	int x;		//posizione [x][y]
+	int y;		//posizione [x][y]
+}
+
+__INIZIALIZZAZIONE DEL GIOCO__
+
+# - master.h (?)
+# - configurazione (livello easy o hard (Linea di comando? / scelta a menu?) 
+# - settaggio dei semafori (num_sem = BASE * ALTEZZA);
+# - checkerboard con set di x e y (x = colonna, y = riga) num_sem progressivo;
+# - creare array giocatori con pid giocatore (player_pid[SO_NUMG]);
+# - creare la memoria condivisa ed inserire array giocatori e checkboard;
+# - attendere piazzamento delle pedine (coda di messaggi ??);
+# - piazzare le bandierine sulla checkboard e assegnare il valore (cell.value = "5", cell.flag = 1);
+# - avvio del handler per il timer del round;
+
+__VARIABILI D'AMBIENTE__
+
+• SO_NUM_G: numero di processi giocatore,
+• SO_NUM_P: processi pedina per ogni giocatore,
+• SO_MAX_TIME: durata massima di un round
+• SO_BASE, SO_ALTEZZA: dimensioni del campo di gioco
+• SO_FLAG_MIN, SO_FLAG_MAX: numero minimo e massimo di bandierine posizionate per round
+• SO_ROUND_SCORE: punteggio totale assegnato per round alle varie bandierine
+• SO_N_MOVES: numero totale di mosse a disposizione delle pedine (vale per tutto il gioco, non per ogni round) 
+• SO_MIN_HOLD_NSEC: numero minimo di nanosecondi di occupazione di una cella da parte di una pedina
+
+
+__SEGNALI__
+
+__master IN
+# - bandierina presa
+# - fine piazzamento pedine
+# - indicazione prima mossa da tutti i giocatori
+# - bandierina conquistata
+
+__master OUT
+# - inizio round
+# - fine piazzamento bandierine
+# - fine round per timer
+# - fine gioco (pedine con 0 mosse)
+# - fine tempo round
+
+
+__giocatore IN
+# - inizio round
+# - fine piazzamento bandierine
+# - cella occupata / fine mosse
+# - bandierina conquistata
+
+__giocatore OUT
+# - fine piazzamento pedine
+# - indicazione prima mossa 
+
+__pedina IN
+# - inizio round
+
+__pedina OUT
+# - cella occupata / fine mosse
+# - bandierina conquistata
+
+
