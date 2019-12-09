@@ -1,10 +1,8 @@
 #include "header.h"
 
-int length;
-int my_key; /*chiave per shared memory*/
-int shm_id; /*id shared memory*/
+cell chessboard[1200];
 
-/*void shm_print_stats(int fd, int m_id) {
+void shm_print_stats(int fd, int m_id) {
     struct shmid_ds my_m_data;
     int ret_val;
 
@@ -26,7 +24,7 @@ int shm_id; /*id shared memory*/
     dprintf(fd, "----------------------- PID of last shmat/shmdt: %d\n",
     my_m_data.shm_lpid);
     dprintf(fd, "--- IPC Shared Memory ID: %8d, END -----\n", m_id);
-}*/
+}
 
 /*funzione scelta modalità (easy o hard)*/
 
@@ -69,7 +67,71 @@ void setMode(char fileName){
         exit(-1);
         }
 }
+
 /*funzione set shared memory*/
+void setShm(){
+
+    cell *chessboard[length];
+    int board_pointer;
+    my_key = 1234;
+    /* Creo un segmento in memoria condivisa di grandezza cella * base * altezza */
+    shm_id = shmget(my_key, sizeof(cell) * mode.SO_BASE * mode.SO_ALTEZZA, IPC_CREAT | 0600);
+
+    chessboard [length] = (cell*)shmat(shm_id, NULL, 0);
+    
+}
+
+/*funzione inizializzazione scacchiera*/
+void setChessboard(){
+    int i, y, sem_num,c, length, score, offset;
+    sem_num, c, offset=0 , y= 0;
+    length = (mode.SO_ALTEZZA * mode.SO_BASE);
+
+        //cell chessboard[length];
+
+    for(i=0;i<length;i++){
+            chessboard[i].x = offset;
+            chessboard[i].y = y;
+            chessboard[i].value = '0';
+            chessboard[i].sem_num = sem_num;
+            chessboard[i].score = score; 
+        offset++;
+        printf("|");
+        printf("%d", chessboard[i].x);
+        printf("| ");
+        if(y>=0 && y<10){
+            printf(" ");
+        }
+        if(offset % mode.SO_BASE == 0){
+            y++;
+            printf("\n");
+            printf("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+        }
+    }
+    printf("\n");
+}
+
+void printChessboard(){
+    int i ,offset, y;
+    printf("PORCO DIO \n\n\n ");
+    for(i=0;i<length;i++){
+        offset++;
+        printf("|");
+        printf("%c", chessboard[i].value);
+        printf("| ");
+        if(y>=0 && y<10){
+            printf(" ");
+        }
+        if(offset % mode.SO_BASE == 0){
+            y++;
+            printf("\n");
+            printf("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+        }
+    }
+    printf("\n");
+
+}
+
 void createProcPlayer(){
 
     int i, value, status;
@@ -83,6 +145,7 @@ void createProcPlayer(){
                 break;
 
             case 0:
+            sleep(1);
                 printf("# - Giocatore %d\n", getpid());
                 createProcPawn(getpid());
                 wait(&status);
@@ -97,9 +160,10 @@ void createProcPlayer(){
 
     while (wait(NULL) > 0);
 }
+
 void createProcPawn(int player){
 
-    int j, value, cont = 0;             
+    int j, value, i, cont = 0;             
                     
     for(j = 0; j < mode.SO_NUM_P; j++){
         value = fork();
@@ -116,48 +180,12 @@ void createProcPawn(int player){
         }
     }
     while (wait(NULL) > 0); 
-	printf("Tutte le pedine del giocatore %d sono state create!\n", player);
-    printf("\n\n\n\n %d ", cont);
+	printf("Tutte e %d le pedine del giocatore %d sono state create!\n\n",cont,  player);
 }
 
-
-void setShm(){
-
-    cell *chessboard[length];
-    int board_pointer;
-    printf("%d", length);
-    my_key = 1234;
-    /* Creo un segmento in memoria condivisa di grandezza cella * base * altezza */
-    shm_id = shmget(my_key, sizeof(cell) * mode.SO_BASE * mode.SO_ALTEZZA, IPC_CREAT | 0600);
-
-    chessboard [length] = (cell*)shmat(shm_id, NULL, 0);
-    
-}
-
-/*funzione inizializzazione scacchiera*/
-void setChessboard(){
-    int i, y, sem_num, length, score, offset;
-    sem_num = 0, offset=0 , y= 0;
-    length = (mode.SO_ALTEZZA * mode.SO_BASE);
-
-        cell chessboard[length];
-
-    for(i=0;i<length;i++){
-            chessboard[i].x = offset;
-            chessboard[i].y = y;
-            chessboard[i].value = 0;
-            chessboard[i].sem_num = sem_num;
-            chessboard[i].score = score; 
-        offset++;
-        printf("|");
-        printf("%d", chessboard[i].y);
-        printf("| ");
-        if(y >= 0 && y < 10)
-            printf(" ");
-        if(offset % mode.SO_BASE == 0){
-            y++;
-            printf("\n");
-        }
-    }
-    printf("\n");
+int casuale(int a){
+    srand(time(NULL));
+    int casuale = rand()%(a+1);
+    printf("%d\n", casuale);
+    return casuale;
 }

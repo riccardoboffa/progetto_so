@@ -13,7 +13,6 @@
 #include <sys/msg.h> /*Messaggi*/
 #include <sys/sem.h> /*Semafori*/
 
-#define LUNG 0
 
 /*#define TEST_ERROR if (errno) {dprintf(STDERR_FILENO, \
                         "%s:%d: PID=%5d: Error %d (%s)\n", \
@@ -22,6 +21,12 @@
                         getpid(), \
                         errno, \
                         strerror(errno));}*/
+
+
+/* DICHIARAZIONE VARIABILI*/
+int shm_id; /*id shared memory*/
+int my_key; /*chiave per shared memory*/
+int length; /*lunghezza scacchiera SO_BASE * SO_ALTEZZA*/
 
 /*DICHIARAZIONE STRUTTURE*/
 struct str_mode { /*struct con i parametri per il livello del gioco (easy,hard)*/
@@ -38,11 +43,11 @@ int SO_MIN_HOLD_SEC;
 }mode;
 
 typedef struct cell{
-char value; /*valore da stampare*/
-int sem_num; /*numero del semaforo corrispondente nel set di semafori*/
-int score; /*punteggio della bandierina*/
-int x; /*posizione [x][y]*/
-int y; /*posizione [x][y]*/
+char value; //valore da stampare
+int sem_num; //numero del semaforo corrispondente nel set di semafori
+char score; //punteggio della bandierina
+int x; //posizione [x][y]
+char y; //posizione [x][y]
 }cell;
 
 
@@ -53,3 +58,5 @@ void shm_print_stats(int fd, int m_id);
 void setChessboard();
 void createProcPlayer();
 void createProcPawn(int player);
+int casuale(int a);
+void printChessboard();

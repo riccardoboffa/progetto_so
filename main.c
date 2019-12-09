@@ -2,7 +2,6 @@
 
 /* MAIN */
 
-
 int main(int argc, char * argv[]){
     if(argc > 1){
         setMode(*argv[1]);
@@ -12,6 +11,7 @@ int main(int argc, char * argv[]){
     }
     setChessboard();
     setShm();
-    printf("N° giocatori: %d\n", mode.SO_NUM_G);
-	createProcPlayer();
+    printf("Numero giocatori: %d\n\n", mode.SO_NUM_G);
+    createProcPlayer();
+    printChessboard();
 }
