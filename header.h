@@ -1,4 +1,5 @@
 #define _GNU_SOURCE
+#include "conf.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -12,51 +13,51 @@
 #include <sys/shm.h> /*Memoria Condivisa*/
 #include <sys/msg.h> /*Messaggi*/
 #include <sys/sem.h> /*Semafori*/
-
-
-/*#define TEST_ERROR if (errno) {dprintf(STDERR_FILENO, \
+#define TEST_ERROR if (errno) {dprintf(STDERR_FILENO, \
                         "%s:%d: PID=%5d: Error %d (%s)\n", \
                         FILE, \
                         LINE, \
                         getpid(), \
                         errno, \
-                        strerror(errno));}*/
-
-
-/* DICHIARAZIONE VARIABILI*/
-int shm_id; /*id shared memory*/
-int my_key; /*chiave per shared memory*/
-int length; /*lunghezza scacchiera SO_BASE * SO_ALTEZZA*/
-
-/*DICHIARAZIONE STRUTTURE*/
-struct str_mode { /*struct con i parametri per il livello del gioco (easy,hard)*/
-int SO_NUM_G;
-int SO_NUM_P;
-int SO_MAX_TIME;
-int SO_BASE;
-int SO_ALTEZZA;
-int SO_FLAG_MIN;
-int SO_FLAG_MAX;
-int SO_ROUND_SCORE;
-int SO_N_MOVES;
-int SO_MIN_HOLD_SEC;
-}mode;
+                        strerror(errno));}
 
 typedef struct cell{
-char value; //valore da stampare
-int sem_num; //numero del semaforo corrispondente nel set di semafori
-char score; //punteggio della bandierina
-int x; //posizione [x][y]
-char y; //posizione [x][y]
+char value;
+int sem_num;
+char score;
+int x;
+int y;
 }cell;
 
+typedef struct pawn{
+    pid_t player_id;
+    pid_t pawn_id;
+    int x;
+    int y;
+}pawn;
 
-/*DICHIARAZIONE FUNZIONI*/
-void setMode(char fileName);
+typedef struct player{
+    pid_t player_id;
+    int score;
+}player;
+
+typedef struct sp{
+    int my_key;
+    int shm_id;
+}sp;
+
+sp spchessboard;
+sp spplayer;
+sp sppawn;
+
+cell chessboard[SO_BASE*SO_ALTEZZA];
+cell *_chessboard[SO_BASE*SO_ALTEZZA];
+player *_player[SO_NUM_G];
+pawn *_pawn[SO_NUM_P];
+
 void setShm();
-void shm_print_stats(int fd, int m_id);
+void ciao();
+void shm_print_stats(int fd,int m_id);
 void setChessboard();
-void createProcPlayer();
-void createProcPawn(int player);
-int casuale(int a);
 void printChessboard();
+void modifica();

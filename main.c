@@ -1,17 +1,12 @@
 #include "header.h"
 
-/* MAIN */
+/*MAIN*/
 
-int main(int argc, char * argv[]){
-    if(argc > 1){
-        setMode(*argv[1]);
-    }else{
-        printf("Inserire la modalita' di gioco (e oppure h)\n");
-        exit(-1);
-    }
-    setChessboard();
+void main(){
     setShm();
-    printf("Numero giocatori: %d\n\n", mode.SO_NUM_G);
-    createProcPlayer();
-    printChessboard();
-}
+    ciao();
+    shm_print_stats(2,spchessboard.shm_id);
+    shm_print_stats(2,spplayer.shm_id);
+    shm_print_stats(2,sppawn.shm_id);
+    setChessboard();
+    }

@@ -1,24 +1,10 @@
-CFLAGS = -Wall -Wpedantic
+CFLAGS = -std=c89 -pedantic -D EASY
 
-all: process
-	$(MAKE) run
-	
-process: function.o process.o
-	gcc $(CFLAGS) function.o process.o -o process
+main: main.c function.c conf.h header.h Makefile
+	gcc $(CFLAGS) main.c function.c -o main
 
-function.o:
-	gcc $(CFLAGS) -c function.c -o function.o
-
-run: 
-	./process
-	
 clean:
-	rm *.o
+	$(RM) -f *.o main function *~
 
- 
-
-
- 
-
-
-
+run:
+	./main
