@@ -22,11 +22,11 @@
                         strerror(errno));}
 
 typedef struct cell{
-char value;
-int sem_num;
-char score;
-int x;
-int y;
+    char value;
+    int sem_num;
+    char score;
+    int x;
+    int y;
 }cell;
 
 typedef struct pawn{
@@ -46,18 +46,21 @@ typedef struct sp{
     int shm_id;
 }sp;
 
-sp spchessboard;
-sp spplayer;
-sp sppawn;
+sp spchessboard, spplayer, sppawn;
 
-cell chessboard[SO_BASE*SO_ALTEZZA];
-cell *_chessboard[SO_BASE*SO_ALTEZZA];
-player *_player[SO_NUM_G];
-pawn *_pawn[SO_NUM_P];
+typedef player players[SO_NUM_G];
+typedef cell chessboards[SO_BASE+SO_ALTEZZA];
+typedef pawn pawns[SO_NUM_P];
+
+players *p_players;
+pawns *p_pawns;
+chessboards *p_chessboards;
 
 void setShm();
-void ciao();
 void shm_print_stats(int fd,int m_id);
+void setPlayer(int i, pid_t player_id);
+void setPawn(int i, pid_t player_id, pid_t pawn_id);
 void setChessboard();
 void printChessboard();
-void modifica();
+void createProc();
+void createProcPawn(pid_t player);
